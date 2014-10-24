@@ -14,26 +14,25 @@ import static javax.swing.JFrame.EXIT_ON_CLOSE;
 
 class Tetris {
     /**
-     * フレーム
-     */
-    private static JFrame frame;
-
-    /**
-     * ブロック
+     * 真ん中のパネル
      */
     private static JPanel centerPanel;
 
     /**
      * メイン
      *
-     * @param args
-     * @throws InterruptedException
+     * @param args 引数
+     * @throws InterruptedException 割り込みが発生した場合
      */
     public static void main(String args[]) throws InterruptedException {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
-                startGame();
+                try {
+                    startGame();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -44,7 +43,7 @@ class Tetris {
     private static void createAndShowGUI() {
         System.out.println("Created GUI" +
                 SwingUtilities.isEventDispatchThread());
-        frame = new JFrame();
+        JFrame frame = new JFrame();
 
         centerPanel = new CenterPanel();
 
@@ -73,122 +72,36 @@ class Tetris {
         /**
          * キー操作を監視するためのListener
          */
-        frame.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                System.out.println("KeyTyped: " + e.getKeyChar());
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                System.out.println("KeyPressed: " + e.getKeyChar());
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                System.out.println("KeyReleased: " + e.getKeyChar());
-            }
-        });
+        frame.addKeyListener(new MyKeyListener());
 
         /**
          * マウスのクリック操作を監視するためのListener
          */
-        frame.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                System.out.println("MouseClicked: " + e.getButton());
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                System.out.println("MousePressed: " + e.getButton());
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                System.out.println("MouseReleased: " + e.getButton());
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                System.out.println("MouseEntered: " + e.getButton());
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                System.out.println("MouseExited: " + e.getButton());
-            }
-        });
+        frame.addMouseListener(new MyMouseListener());
 
         /**
          * マウスの動きを監視するためのListener
          */
-        frame.addMouseMotionListener(new MouseMotionListener() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                System.out.println("MouseDragged: " + e.getButton());
-            }
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                System.out.println("MouseMoved: " + e.getButton());
-            }
-        });
+        frame.addMouseMotionListener(new MyMouseMotionListener());
 
         /**
          * フレームの操作を監視するためのListener
          */
-        frame.addComponentListener(new ComponentListener() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                topPanel.repaint();
-                leftWallPanel.repaint();
-                rightWallPanel.repaint();
-                bottomPanel.repaint();
-            }
-
-            @Override
-            public void componentMoved(ComponentEvent e) {
-
-            }
-
-            @Override
-            public void componentShown(ComponentEvent e) {
-
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent e) {
-
-            }
-        });
-
+        frame.addComponentListener(
+                new MyComponentListener(topPanel, bottomPanel, leftWallPanel, rightWallPanel));
         frame.pack();
-        frame.setBounds(0, 0, 480, 640);
+        frame.setBounds(0, 0, 355, 600);
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
         frame.setVisible(true);
-
+        frame.setResizable(false);
     }
 
     /**
      * ゲーム開始！
      */
-    private static void startGame() {
-        Thread thread = new Thread() {
-            /**
-             * 真ん中のパネルだけ再描画する
-             */
-            @Override
-            public void run() {
-                while (true) {
-                    centerPanel.repaint();
-                    try {
-                        Thread.sleep(400);
-                    } catch (Exception ignored) {
-                    }
-                }
-            }
-        };
+    private static void startGame() throws InterruptedException {
+        GameThread thread = new GameThread(centerPanel);
         thread.start();
+//        thread.join();
     }
 }

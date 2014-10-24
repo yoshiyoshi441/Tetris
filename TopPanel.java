@@ -4,16 +4,11 @@ import java.awt.*;
 
 public class TopPanel extends JPanel {
     /**
-     * 壁
-     */
-    private final Image wall = getToolkit().getImage("img/Wall.png");
-
-    /**
      * コンストラクタ
      */
     public TopPanel() {
         // パネルの設定
-        setPreferredSize(new Dimension(24, 24));
+        setPreferredSize(new Dimension(25, 25));
         setBorder(new EmptyBorder(0, 0, 0, 0));
     }
 
@@ -22,16 +17,17 @@ public class TopPanel extends JPanel {
      * repaintが呼ばれるとココが呼ばれる
      */
     protected void paintComponent(Graphics graphics) {
-        // 背景とか
-        graphics.setColor(Color.blue);
-
         // サイズを求めておく
         Dimension size = getSize();
 
+        // ブロックの色
+        Color block = new Color(95, 95, 80);
+        graphics.setColor(block);
+
         //↑壁
-        graphics.drawImage(wall, 0, 0, this);
-        graphics.drawImage(wall, 25, 0, this);
-        graphics.drawImage(wall, size.width - 49, 0, this);
-        graphics.drawImage(wall, size.width - 24, 0, this);
+        graphics.fillRect(0, 0, 24, 24);
+        graphics.fillRect(25, 0, 24, 24);
+        graphics.fillRect(size.width - 49, 0, 24, 24);
+        graphics.fillRect(size.width - 24, 0, 24, 24);
     }
 }

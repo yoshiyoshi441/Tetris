@@ -1,35 +1,27 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.geom.CubicCurve2D;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 class CenterPanel extends JPanel {
     /**
-     * イメージ集
+     * ブロックの X 座標
      */
-    private Map<String, Image> images = new HashMap<>();
+    private int x = 1;
+
+    /**
+     * ブロックの Y 座標
+     */
+    private int y = 1;
 
     /**
      * コンストラクタ
      */
     public CenterPanel() {
-        addImages();
         setBorder(new EmptyBorder(0, 0, 0, 0));
-    }
-
-    /**
-     * 読み込むイメージをマップに追加する
-     */
-    public void addImages() {
-        images.put("aquaBlue", getToolkit().getImage("img/Aqua blue.png"));
-        images.put("blue", getToolkit().getImage("img/Blue.png"));
-        images.put("green", getToolkit().getImage("img/Green.png"));
-        images.put("orange", getToolkit().getImage("img/Orenge.png"));
-        images.put("purple", getToolkit().getImage("img/Purple.png"));
-        images.put("red", getToolkit().getImage("img/Red.png"));
-        images.put("yellow", getToolkit().getImage("img/Yellow.png"));
     }
 
     /**
@@ -37,10 +29,32 @@ class CenterPanel extends JPanel {
      * repaintが呼ばれるとココが呼ばれる
      */
     protected void paintComponent(Graphics graphics) {
-        //  ランダムにブロックを塗ります
+        //  ランダムにブロックを塗りますとおもったけど
+        // 同じ大きさの■をいろいろな色で塗ることにします
         Random random = new Random();
-        String[] keys = images.keySet().toArray(new String[images.size()]);
-        String color = keys[random.nextInt(keys.length)];
-        graphics.drawImage(images.get(color), 1, 1, this);
+
+        int red = random.nextInt(255);
+        int green = random.nextInt(255);
+        int blue = random.nextInt(255);
+
+        // X と Y の座標を少しづつズラしてみると？？
+        graphics.setColor(new Color(0, 0, 0));
+        graphics.fillRect(1, 0, 300, 600);
+        if (x < 300) {
+            x = x + 1;
+        } else {
+            x = 1;
+        }
+
+        if (y < 500) {
+            y = y + 1;
+        } else {
+            y = 1;
+        }
+
+
+        Color color = new Color(red, green, blue);
+        graphics.setColor(color);
+        graphics.fillRect(x, y, 24, 24);
     }
 }

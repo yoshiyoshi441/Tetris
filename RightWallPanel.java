@@ -4,11 +4,6 @@ import java.awt.*;
 
 public class RightWallPanel extends JPanel {
     /**
-     * 壁
-     */
-    private final Image wall = getToolkit().getImage("img/wall.png");
-
-    /**
      * コンストラクタ
      */
     public RightWallPanel(){
@@ -22,15 +17,16 @@ public class RightWallPanel extends JPanel {
      * repaintが呼ばれるとココが呼ばれる
      */
     protected void paintComponent(Graphics graphics) {
-        // 背景とか
-        graphics.setColor(Color.cyan);
-
         // サイズを求めておく
         Dimension size = getSize();
 
+        // ブロックの色
+        Color block = new Color(95, 95, 80);
+        graphics.setColor(block);
+
         //→壁
         for (int i = 0; i < size.height; i = i + 25) {
-            graphics.drawImage(wall, size.width - 24, i, this);
+            graphics.fillRect(size.width - 24, i, 24, 24);
         }
     }
 }
